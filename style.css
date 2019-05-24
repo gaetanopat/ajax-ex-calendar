@@ -1,0 +1,39 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: #4f87e2;
+}
+#calendario{
+  text-align: center;
+}
+.container{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: calc(100vh - 37px);
+}
+.precendente_successivo{
+  display: flex;
+}
+.precedente{
+  text-decoration: none;
+  color: #bc1717;
+  font-weight: bold;
+  margin-right: 100px;
+}
+.successivo{
+  text-decoration: none;
+  margin-left: 100px;
+  color: #bc1717;
+  font-weight: bold;
+}
+.active{
+  display: block;
+}
+/* h2, ul{
+  display: none;
+} */
