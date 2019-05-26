@@ -4,8 +4,9 @@
   padding: 0;
 }
 body{
-  background-color: #4f87e2;
+  background-color: #d3d9e2;
 }
+/* per 'Calendario anno 2018' */
 #calendario{
   text-align: center;
 }
@@ -16,24 +17,26 @@ body{
   flex-direction: column;
   min-height: calc(100vh - 37px);
 }
+/* per il div che contiene Precedente e Successivo */
 .precendente_successivo{
   display: flex;
 }
-.precedente{
+.precedente, .successivo{
   text-decoration: none;
   color: #bc1717;
   font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: white;
+}
+.precedente{
   margin-right: 100px;
 }
 .successivo{
-  text-decoration: none;
   margin-left: 100px;
-  color: #bc1717;
-  font-weight: bold;
 }
-.active{
-  display: block;
+a.disabled{
+  color: grey;
+  cursor: not-allowed;
+  pointer-events: none;
 }
-/* h2, ul{
-  display: none;
-} */

@@ -1,90 +1,76 @@
 $(document).ready(function(){
+  var template_html = $('#template_calendario').html();
+  var template_function = Handlebars.compile(template_html);
 
+
+  var min_date = '2018-01-01';
+  var max_date = '2018-12-01';
   // imposto il primo gennaio del 2018
-  var data = '2018-01-01'
-  var moment_data = moment(data);
+  var data = '2018-01-01';
+  var data_corrente = moment(data);
+  // variabili per visualizzarle nel display del mese
+  disegnaMese(data_corrente);
 
-  // var mese = moment_date.format('MMMM');
-  var anno = moment_data.format('YYYY');
+  // all'inizio il tasto precedente deve essere disabilitato
+  $('.precedente').addClass('disabled');
 
-  var arrayMesi = [];
-  var set_month, get_month, mese_corrente;
-  // per creare un array di 12 mesi
-  for (var i = 0; i < 12; i++) {
-    // setto il mese alla data iniziale da 0 a 11 (Gennaio - Dicembre)
-    set_month = moment_data.set('month', i);
-    // ogni volta prendo, appunto, il mese (in numero)
-    get_month = moment_data.get(set_month);
-    // trasformo questo numero in formato MMMM (stringa intera)
-    mese_corrente = moment_data.format('MMMM');
-    arrayMesi.push(mese_corrente);
-  }
-  var m = 0;
-  // gennaio
-  $('h2.active').text(arrayMesi[m] + ' ' + anno);
-  var mese_attivo = $('h2.active').text();
-
-
-  // se gennaio 2018 include gennaio
-  if(mese_attivo.includes(arrayMesi[m])){
-    // prendo i giorni totali del mese
-    giorni_totali_mese = moment_data.daysInMonth();
-    for (var k = 0; k < giorni_totali_mese; k++) {
-      singolo_giorno = (k+1) + ' ' + arrayMesi[m];
-      $('ul').append('<li>' + singolo_giorno + '</li>');
-    }
-  }
-  // quando clicco sul successivo
+  // quando clicco su Successivo
   $('.successivo').click(function(){
-    if(m < 11){
-      $('ul').empty();
-
-      m++;
-
-      console.log(m);
-      $('h2.active').text(arrayMesi[m] + ' ' + anno);
-      var mese_attivo = $('h2.active').text();
-      // assegno il mese m
-      set_month = moment_data.set('month', m);
-
-      // se gennaio 2018 include gennaio
-      if(mese_attivo.includes(arrayMesi[m])){
-        // prendo i giorni totali del mese
-        giorni_totali_mese = set_month.daysInMonth();
-        for (var k = 0; k < giorni_totali_mese; k++) {
-          singolo_giorno = (k+1) + ' ' + arrayMesi[m];
-          $('ul').append('<li>' + singolo_giorno + '</li>');
-        }
-      }
-    } else {
-      $(this).off();
+    // aggiungo un mese alla data corrente
+    data_corrente.add(1, 'months');
+    // richiamo la funzione disegnaMese sulla data corrente
+    disegnaMese(data_corrente);
+    console.log(data_corrente.format('MMM'));
+    // se la data corrente è == 2018-12-01
+    if(data_corrente.isSameOrAfter(max_date)){
+      // disabilito il pulsante successivo
+      $(this).addClass('disabled');
     }
+    // riattivo il pulsante precedente
+    $('.precedente').removeClass('disabled');
+
   });
 
-  // quando clicco sul precedente
+
+  // quando clicco su Precedente
   $('.precedente').click(function(){
-    if(m > 0){
-      $('ul').empty();
-
-      m--;
-      console.log(m);
-      $('h2.active').text(arrayMesi[m] + ' ' + anno);
-      var mese_attivo = $('h2.active').text();
-      // assegno il mese m
-      set_month = moment_data.set('month', m);
-
-      // se gennaio 2018 include gennaio
-      if(mese_attivo.includes(arrayMesi[m])){
-        // prendo i giorni totali del mese
-        giorni_totali_mese = set_month.daysInMonth();
-        for (var k = 0; k < giorni_totali_mese; k++) {
-          singolo_giorno = (k+1) + ' ' + arrayMesi[m];
-          $('ul').append('<li>' + singolo_giorno + '</li>');
-        }
-      }
-    } else {
-      $(this).off();
+    // sottraggo un mese alla data corrente
+    data_corrente.subtract(1, 'months');
+    // richiamo la funzione disegnaMese sulla data corrente
+    disegnaMese(data_corrente);
+    console.log(data_corrente.format('MMM'));
+    if(data_corrente.isSameOrBefore(min_date)){
+      $(this).addClass('disabled');
     }
+
+    $('.successivo').removeClass('disabled');
   });
 
-})
+  function disegnaMese(moment_data){
+    var giorno, giorni;
+    $('ul').empty();
+    // giorni totali nel mese corrente
+    giorni = moment_data.daysInMonth();
+
+    var mese = moment_data.format('MMMM');
+    var anno = moment_data.format('YYYY');
+
+    // visualizzo nell'h2 Mese 2018
+    $('#month').text(mese + ' ' + anno);
+    for (var i = 0; i < giorni; i++) {
+      giorno = (i+1) + ' ' + mese;
+      var variables = {
+        'giorno_template': giorno,
+        'data_giorno': moment_data.format('YYYY-MM-') + format_day(i+1)
+      }
+      $('ul').append(template_function(variables));
+    }
+  }
+  // per aggiungere lo 0 davanti se è < 10 
+  function format_day(day){
+    if(day < 10){
+      return '0' + day
+    }
+    return day;
+  }
+});

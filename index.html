@@ -9,20 +9,20 @@
     <title></title>
   </head>
   <body>
-    <h1 id="calendario">Calendario</h1>
+    <h1 id="calendario">Calendario anno 2018</h1>
     <div class="container">
       <h2 id="month" class="active"></h2>
       <div class="precendente_successivo">
-        <a class="precedente" href="#">Precendente</a>
-        <a class="successivo" href="#">Successivo</a>
+        <a class="precedente" onclick = "return false" href="#">Precendente</a>
+        <a class="successivo" onclick = "return false" href="#">Successivo</a>
       </div>
-      <ul class="active">
+      <ul>
       </ul>
     </div>
 
     <script src="main.js"></script>
     <script id="template_calendario" type="text/x-handlebars-template">
-
+      <li data_giorno="{{data_giorno}}">{{giorno_template}}</li>
     </script>
   </body>
 </html>
