@@ -18,7 +18,7 @@ $(document).ready(function(){
   $('.successivo').click(function(){
     // aggiungo un mese alla data corrente
     data_corrente.add(1, 'months');
-    // richiamo la funzione disegnaMese sulla data corrente
+
     disegnaMese(data_corrente);
     console.log(data_corrente.format('MMM'));
     // se la data corrente è == 2018-12-01
@@ -36,7 +36,7 @@ $(document).ready(function(){
   $('.precedente').click(function(){
     // sottraggo un mese alla data corrente
     data_corrente.subtract(1, 'months');
-    // richiamo la funzione disegnaMese sulla data corrente
+
     disegnaMese(data_corrente);
     console.log(data_corrente.format('MMM'));
     if(data_corrente.isSameOrBefore(min_date)){
@@ -54,23 +54,55 @@ $(document).ready(function(){
 
     var mese = moment_data.format('MMMM');
     var anno = moment_data.format('YYYY');
-
+    var variables;
     // visualizzo nell'h2 Mese 2018
     $('#month').text(mese + ' ' + anno);
     for (var i = 0; i < giorni; i++) {
       giorno = (i+1) + ' ' + mese;
-      var variables = {
+      variables = {
         'giorno_template': giorno,
         'data_giorno': moment_data.format('YYYY-MM-') + format_day(i+1)
       }
       $('ul').append(template_function(variables));
     }
+    disegnaFestivita(moment_data.month());
+
   }
-  // per aggiungere lo 0 davanti se è < 10 
+
   function format_day(day){
     if(day < 10){
       return '0' + day
     }
     return day;
   }
+
+
+  function disegnaFestivita(mese){
+    $.ajax({
+      url: 'https://flynn.boolean.careers/exercises/api/holidays',
+      method: 'get',
+      data: {
+        year: 2018,
+        month: mese
+      },
+      success: function (data) {
+        console.log(data);
+        var festivita = data.response;
+        // ciclo le festività restituite dall'api
+        for (var i = 0; i < festivita.length; i++) {
+          // festività corrente
+          var festa = festivita[i];
+          // recupero l'item con la data corrispondente alla festività corrente
+          var giorno_festa = $('ul li[data_giorno="' + festa.date + '"]');
+          // aggiungo la classe che fa il testo in rosso
+          giorno_festa.addClass('festivita');
+          // aggiungo il nome della festività
+          giorno_festa.append(' - ' + festa.name);
+        }
+      },
+      error: function (richiesta, stato, errori) {
+        alert("E' avvenuto un errore. " + errore);
+      }
+    });
+  };
 });
